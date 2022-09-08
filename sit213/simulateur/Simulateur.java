@@ -88,7 +88,9 @@ public class Simulateur {
 
     	source.connecter(transmetteurLogique);
     	transmetteurLogique.connecter(destination);
-    	// transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
+    	if (affichage) {
+    		transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
+    	}
 
     }
    
