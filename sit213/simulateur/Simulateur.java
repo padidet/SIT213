@@ -1,9 +1,18 @@
 package simulateur;
+
 import destinations.Destination;
+import destinations.DestinationFinale;
+
+import information.Information;
+
 import sources.Source;
 import sources.SourceFixe;
+import sources.SourceAleatoire;
+
 import transmetteurs.Transmetteur;
-import visualisations.SondeLogique;
+import transmetteurs.TransmetteurParfait;
+
+import visualisations.*;
 
 
 /** La classe Simulateur permet de construire et simuler une chaîne de
@@ -53,16 +62,34 @@ public class Simulateur {
      * @param args le tableau des différents arguments.
      *
      * @throws ArgumentsException si un des arguments est incorrect
-     *
+     * @throws InformationNonConformeException
      */   
     public  Simulateur(String [] args) throws ArgumentsException {
+
     	// analyser et récupérer les arguments   	
     	analyseArguments(args);
-      
-      	// TODO : Partie à compléter
-    	source=new SourceFixe();
-        source.connecter(new SondeLogique("Source", 200));
-      		
+
+    	if (messageAleatoire) {
+    		if (aleatoireAvecGerme) {
+    			source = new SourceAleatoire(nbBitsMess, seed);
+    		} else {
+    			source = new SourceAleatoire(nbBitsMess);
+    		}
+    	} else {
+    		source=new SourceFixe();
+    	}
+
+    	if (affichage) {
+    		source.connecter(new SondeLogique("Source", 200));
+    	}
+
+    	destination = new DestinationFinale();
+    	transmetteurLogique = new TransmetteurParfait();
+
+    	source.connecter(transmetteurLogique);
+    	transmetteurLogique.connecter(destination);
+    	transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
+
     }
    
    
@@ -140,22 +167,43 @@ public class Simulateur {
      */ 
     public void execute() throws Exception {      
          
-    	// TODO : typiquement source.emettre(); 
-      	     	      
+    	// typiquement source.emettre(); 
+      	source.emettre();
     }
    
    	   	
    	
     /** La méthode qui calcule le taux d'erreur binaire en comparant
      * les bits du message émis avec ceux du message reçu.
+     * 
+     * En cas de différence de longueur, chaque bit en trop ou en moins sera compté faux.
      *
      * @return  La valeur du Taux dErreur Binaire.
      */   	   
-    public float  calculTauxErreurBinaire() {
+    public float calculTauxErreurBinaire() {
 
-    	// TODO : A compléter
+    	Information<Boolean> messageEmis = this.source.getInformationEmise();
+    	Information<Boolean> messageRecu = this.destination.getInformationRecue();
 
-    	return  0.0f;
+    	int longueurEmise = messageEmis.nbElements();
+    	int longueurRecue = messageRecu.nbElements();
+    	int longueurMinimale, longueurMaximale;
+    	if (longueurEmise <= longueurRecue) {
+    		longueurMinimale = longueurEmise;
+    		longueurMaximale = longueurRecue;
+    	} else {
+    		longueurMinimale = longueurRecue;
+    		longueurMaximale = longueurEmise;
+    	}
+
+    	int nbErreurs = 0;
+    	for (int i = 0; i < longueurMinimale; i++) {
+    		if (messageEmis.iemeElement(i) != messageRecu.iemeElement(i)) {
+    			nbErreurs++;
+    		}
+    	}
+
+    	return (float) (nbErreurs + (longueurMaximale - longueurMinimale)) / longueurMaximale;
     }
    
    
