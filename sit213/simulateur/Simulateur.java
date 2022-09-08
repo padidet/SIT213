@@ -76,7 +76,7 @@ public class Simulateur {
     			source = new SourceAleatoire(nbBitsMess);
     		}
     	} else {
-    		source=new SourceFixe();
+    		source = new SourceFixe(messageString);
     	}
 
     	if (affichage) {
@@ -243,4 +243,3 @@ public class Simulateur {
     	}              	
     }
 }
-
