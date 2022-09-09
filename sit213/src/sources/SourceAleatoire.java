@@ -16,11 +16,7 @@ public class SourceAleatoire extends Source<Boolean> {
         informationGeneree = new Information<Boolean>();
         Random random = new Random();
         for (int i = 0; i < 7; i++) {
-        	if (random.nextDouble(1) > 0.5) {
-        		informationGeneree.add(true);
-        	} else {
-        		informationGeneree.add(false);
-        	}
+        	informationGeneree.add(random.nextBoolean());
         }
     }
 
@@ -35,11 +31,7 @@ public class SourceAleatoire extends Source<Boolean> {
         informationGeneree = new Information<Boolean>();
         Random random = new Random();
         for (int i = 0; i < l; i++) {
-        	if (random.nextDouble(1) > 0.5) {
-        		informationGeneree.add(true);
-        	} else {
-        		informationGeneree.add(false);
-        	}
+        	informationGeneree.add(random.nextBoolean());
         }
     }
 
@@ -55,11 +47,7 @@ public class SourceAleatoire extends Source<Boolean> {
         informationGeneree = new Information<Boolean>();
         Random random = new Random(seed);
         for (int i = 0; i < l; i++) {
-        	if (random.nextDouble(1) > 0.5) {
-        		informationGeneree.add(true);
-        	} else {
-        		informationGeneree.add(false);
-        	}
+        	informationGeneree.add(random.nextBoolean());
         }
     }
 
