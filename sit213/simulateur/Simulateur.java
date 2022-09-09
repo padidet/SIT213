@@ -1,5 +1,5 @@
 package simulateur;
-// caca
+// test comment
 import destinations.Destination;
 import destinations.DestinationFinale;
 
