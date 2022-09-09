@@ -5,15 +5,15 @@ import information.Information;
 import information.InformationNonConformeException;
 
 /** 
- * Un transmetteur idéal.
- * On s'attend à un taux d'erreur binaire nul venant de lui.
+ * Un transmetteur ideal.
+ * On s'attend a� un taux d'erreur binaire nul venant de lui.
  */
 public class TransmetteurParfait extends Transmetteur<Boolean, Boolean> {
 
 	/**
 	 * Permet de recevoir une information.
 	 * 
-	 * @param information - Information à recevoir
+	 * @param information - Information a� recevoir
 	 * @throws InformationNonConformeException 
 	 */
     @Override
@@ -23,8 +23,8 @@ public class TransmetteurParfait extends Transmetteur<Boolean, Boolean> {
     }
 
     /**
-     * Permet d'émettre une information.
-     * Elle est envoyée à toutes les destinations connectées.
+     * Permet d'emettre une information.
+     * Elle est envoyee a� toutes les destinations connectees.
      * 
      * @throws InformationNonConformeException
      */
