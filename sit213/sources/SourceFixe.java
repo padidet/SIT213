@@ -4,13 +4,13 @@ import information.Information;
 import simulateur.ArgumentsException;
 
 /**
- * Une source qui envoie toujours le même message
+ * Une source qui envoie toujours le meme message
  */
 public class SourceFixe extends Source<Boolean> {
 
 	/**
-	 * Constructeur d'une source fixe prédéterminée.
-	 * Elle envoie '101101' en booléens.
+	 * Constructeur d'une source fixe predeterminee.
+	 * Elle envoie '101101' en booleens.
 	 */
     public SourceFixe () {
         informationGeneree = new Information<Boolean>();
@@ -24,17 +24,17 @@ public class SourceFixe extends Source<Boolean> {
 
     /**
      * Constructeur d'une source fixe personnalisable.
-     * Elle envoie un message personnalisé en booléens.
+     * Elle envoie un message personnalise en booleens.
      * 
-     * @param m - Message binaire à envoyer (doit être une chaîne de 0 et de 1)
+     * @param m - Message binaire a� envoyer (doit etre une chaine de 0 et de 1)
      * 
-     * @throws ArgumentsException - Lorsque la chaîne est non instanciée, vide ou contient autre chose que des 0 et des 1
+     * @throws ArgumentsException - Lorsque la chaine est non instanciee, vide ou contient autre chose que des 0 et des 1
      */
     public SourceFixe (String m) throws ArgumentsException {
     	if (m == null) {
-    		throw new ArgumentsException("Le paramètre n'est pas instancié.");
+    		throw new ArgumentsException("Le parametre n'est pas instancie.");
     	} else if (!m.matches("^[01]+$")) {
-    		throw new ArgumentsException("Le paramètre est vide ou contient autre chose que les caractères '0' et '1'.");
+    		throw new ArgumentsException("Le parametre est vide ou contient autre chose que les caracteres '0' et '1'.");
     	}
     	informationGeneree = new Information<Boolean>();
     	for (int i = 0; i < m.length(); i++) {
