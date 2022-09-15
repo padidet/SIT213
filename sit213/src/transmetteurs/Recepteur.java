@@ -56,77 +56,93 @@ public class Recepteur extends Transmetteur<Float, Boolean>{
 		}
 	}
 	
+	/**
+	 * @author : Groupe 3
+	 * @date : 15/09/2022
+	 * @param : aucun
+	 * Fonction permettant de convertir du RZ en numérique.
+	 */
 	protected void convertToRZ() {
+		
+		
 		for(float value:informationRecue) {
-			if(value == true) {
-				for(int i = 0; i < nbEch; i++) {
-					if(i < nbEch/3 || i >= nbEch * (2/3)) {
-						informationGeneree.add(Amin);
-					}
-					else {
-						informationGeneree.add(Amax);
-					}
+			float somme = 0;
+			float moyenne = 0;
+			// float seuilTolerence = 0; // Le seuil de tolérence a définir pour plus tard;
+			for(int i = 0; i < nbEch; i++) {
+				
+				// On cherche parmi les valeurs au milieu du symbole
+				// si la moyenne est égale à Amax (sans seuil de tolérence):
+				if(nbEch/3 < i &&  i < 2 * nbEch/3) {
+					somme += value;
 				}
 			}
+			moyenne = somme/(nbEch/3);
+			if(moyenne >= Amax) {		// Remplacer Amax par Amax - seuilTolerence 
+				informationGeneree.add(true);
+			}
+			else if(moyenne <= Amin) {
+				informationGeneree.add(false);
+			}
 			else {
-				for(int i = 0; i< nbEch; i++) {
-					informationGeneree.add(Amin);
-				}
+				informationGeneree.add(false);
 			}
 		}
 	}
 	
+	/**
+	 * @author : Groupe 3
+	 * @date : 15/09/2022
+	 * @param : aucun
+	 * Fonction permettant de convertir du NRZ en numérique.
+	 */
 	protected void convertToNRZ() {
-		for(Boolean value:informationRecue) {
-			if(value == true) {
-				for(int i = 0; i < nbEch; i++) {
-					informationGeneree.add(Amax);
-				}
+		for(float value:informationRecue) {
+			float somme = 0;
+			float moyenne = 0;
+			// float seuilTolerence = 0; // Le seuil de tolérence a définir pour plus tard;
+			for(int i = 0; i < nbEch; i++) {
+				somme += value;
+			}
+			moyenne = somme/(nbEch);
+			if(moyenne >= Amax) {		// Remplacer (Amax) par (Amax - seuilTolerence) 
+				informationGeneree.add(true);
+			}
+			else if(moyenne <= Amin) {		// Remplacer (Amin) par (Amin - seuilTolerence)
+				informationGeneree.add(false);
 			}
 			else {
-				for(int i = 0; i < nbEch; i++) {
-					informationGeneree.add(Amin);
-				}
+				informationGeneree.add(false);	// Le cas où le symbole est centré en 0. N'arrive jamais sans bruit normalement.
 			}
 		}
 	}	
 	
+	/**
+	 * @author : Groupe 3
+	 * @date : 15/09/2022
+	 * @param : aucun
+	 * Fonction permettant de convertir du NRZT en numérique.
+	 */
 	protected void convertNRZT() {
-		if(informationRecue.nbElements()<2) {
-			
-			float moyenne = (Amax+Amin)/2;
-			float coefMax = Amax - moyenne;
-			float coefMin = moyenne - Amin;
-			float prec = moyenne;
-			
-			if(informationRecue.iemeElement(0)) { 
-				for(int i=0; i<nbEch; i++) {
-					
-					if(i<nbEch*2/3) {
-						prec = Amax;
-						informationGeneree.add(Amax);
-					}
-					if(i> nbEch * 2/3) {
-						prec -= (3*coefMax/nbEch);
-						informationGeneree.add(prec);
-					}
+		for(float value:informationRecue) {
+			float somme = 0;
+			float moyenne = 0;
+			// float seuilTolerence = 0; // Le seuil de tolérence a définir pour plus tard;
+			for(int i = 0; i < nbEch; i++) {
+				
+				// On cherche parmi les valeurs au milieu du symbole
+				// si la moyenne est égale à Amax (sans seuil de tolérence):
+				if(nbEch/3 < i &&  i < 2 * nbEch/3) {
+					somme += value;
 				}
 			}
-			else 
-			{
-				for(int i=0; i<nbEch; i++) {
-					
-					if(i<nbEch*2/3) {
-						prec = Amin;
-						informationGeneree.add(Amin);
-					}
-					if(i> nbEch * 2/3) {
-						prec += (3*Math.abs(coefMin)/nbEch);
-						informationGeneree.add(prec);
-					}
-				}
+			moyenne = somme/(nbEch/3);
+			if(moyenne >= Amax) {		// Remplacer Amax par Amax - seuilTolerence 
+				informationGeneree.add(true);
+			}
+			else {
+				informationGeneree.add(false);
 			}
 		}
-		
 	}
 }

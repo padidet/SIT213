@@ -1,7 +1,6 @@
 package transmetteurs;
 
 import java.util.Objects;
-
 import destinations.DestinationInterface;
 import information.Information;
 import information.InformationNonConformeException;
@@ -28,7 +27,6 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 	
 	public void convert() {
 		informationGeneree = new Information<>();
-		
 		if(Objects.equals(forme,"RZ")) {
 			convertToRZ();
 		}
@@ -38,8 +36,6 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 		if(Objects.equals(forme,"NRZT")) {
 			convertNRZT();
 		}
-		
-		
 	}
 	
 	@Override
