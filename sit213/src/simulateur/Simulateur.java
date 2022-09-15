@@ -126,9 +126,9 @@ public class Simulateur {
      * <dt> -mess m  </dt><dd> m (int) constitue de 1 a 6 digits, le nombre de bits du message "aleatoire" a transmettre</dd>
      * <dt> -s </dt><dd> pour demander l'utilisation des sondes d'affichage</dd>
      * <dt> -seed v </dt><dd> v (int) d'initialisation pour les generateurs aleatoires</dd>
-     * <dt> -form f </dt><dd> f (String) de valeur "RZ", "NRZ" ou "NRZT", la forme d'onde dans le cas analogique</dd>
+     * <dt> -form f </dt><dd> f (String) de valeur "RZ", "NRZ" ou "NRZT", la forme d'onde dans le cas analogique (rend le message analogique si spécifié)</dd>
      * <dt> -nbEch ne</dt><dd> ne (int) nombre entier positif, le nombre d'echantillons par bit (rend le message analogique si spécifié)</dd>
-     * <dt> -ampl min max</dt><dd> min (float) et max (float) flottants tels que min est strictement inférieur a max, les amplitudes min et max</dd>
+     * <dt> -ampl min max</dt><dd> min (float) et max (float) flottants tels que min est strictement inférieur a max, les amplitudes min et max (rend le message analogique si spécifié)</dd>
      *
      * @throws ArgumentsException si un des arguments est incorrect.
      */   
@@ -174,6 +174,7 @@ public class Simulateur {
     			// traiter la valeur associee
     			if (args[i].matches("(RZ|NRZ|NRZT)")) { // exactement "RZ", "NRZ" ou "NRZT"
         			forme = args[i];
+        			analogique = true;
     			}
     			else
     				throw new ArgumentsException("Valeur du parametre -form invalide : " + args[i]);
@@ -207,9 +208,10 @@ public class Simulateur {
     			else
     				throw new ArgumentsException("Valeur d'un parametre -ampl invalide : " + args[i-1]);
 
-    			if (!(Amin < Amax)) {
+    			if (!(Amin < Amax))
     				throw new ArgumentsException("Valeur des parametres -ampl invalide : " + args[i] + " (max) est inferieur ou egal a " + args[i-1] + " (min)");
-    			}
+    			else
+        			analogique = true;
     		}
     		
     		// ajouter ci-apres le traitement des nouvelles options
