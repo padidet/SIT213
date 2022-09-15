@@ -11,6 +11,9 @@ import sources.SourceAleatoire;
 
 import transmetteurs.Transmetteur;
 import transmetteurs.TransmetteurParfait;
+import transmetteurs.Emetteur;
+import transmetteurs.TransmetteurAnalogique;
+import transmetteurs.Recepteur;
 
 import visualisations.*;
 
@@ -36,11 +39,17 @@ public class Simulateur {
     /** la valeur de la semence utilisee pour les generateurs aleatoires */
     private Integer seed = null; // pas de semence par defaut
     
-    /** la longueur du message aleatoire a  transmettre si un message n'est pas impose */
+    /** la longueur du message aleatoire aï¿½ transmettre si un message n'est pas impose */
     private int nbBitsMess = 100; 
     
-    /** la chaine de caracteres correspondant a  m dans l'argument -mess m */
+    /** la chaine de caracteres correspondant aï¿½ m dans l'argument -mess m */
     private String messageString = "100";
+    
+    private String forme = "RZ";
+    private int nbEch = 30;
+    private float Amax = 1.0f;
+    private float Amin = 0.0f;
+    		
    
    	
     /** le  composant Source de la chaine de transmission */
@@ -51,6 +60,12 @@ public class Simulateur {
     
     /** le  composant Destination de la chaine de transmission */
     private Destination <Boolean>  destination = null;
+    
+    private Transmetteur<Float, Float> transmetteurAnalogique = null;
+    
+    private boolean analogique = false;
+    private Transmetteur<Boolean,Float> emetteur = null;
+    private Transmetteur<Float,Boolean> recepteur = null;
    	
    
     /** Le constructeur de Simulateur construit une chaine de
@@ -78,19 +93,17 @@ public class Simulateur {
     	} else {
     		source = new SourceFixe(messageString);
     	}
-
-    	if (affichage) {
-    		source.connecter(new SondeLogique("Source", 200));
+    	
+    	if(analogique == true) {
+    		emetteur = new Emetteur(forme, nbEch, Amin, Amax);
+    		transmetteurAnalogique = new TransmetteurAnalogique();
+    		recepteur = new Recepteur(forme, nbEch, Amin, Amax);
     	}
-
+    	else {
+    		transmetteurLogique = new TransmetteurParfait(); 
+			}
     	destination = new DestinationFinale();
-    	transmetteurLogique = new TransmetteurParfait();
-
-    	source.connecter(transmetteurLogique);
-    	transmetteurLogique.connecter(destination);
-    	if (affichage) {
-    		transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
-    	}
+    	
 
     }
    
@@ -98,15 +111,15 @@ public class Simulateur {
    
     /** La methode analyseArguments extrait d'un tableau de chaines de
      * caracteres les differentes options de la simulation.  <br>Elle met
-     * a  jour les attributs correspondants du Simulateur.
+     * aï¿½ jour les attributs correspondants du Simulateur.
      *
      * @param args le tableau des differents arguments.
      * <br>
      * <br>Les arguments autorises sont : 
      * <br> 
      * <dl>
-     * <dt> -mess m  </dt><dd> m (String) constitue de 7 ou plus digits a  0 | 1, le message a  transmettre</dd>
-     * <dt> -mess m  </dt><dd> m (int) constitue de 1 a  6 digits, le nombre de bits du message "aleatoire" a Â transmettre</dd> 
+     * <dt> -mess m  </dt><dd> m (String) constitue de 7 ou plus digits aï¿½ 0 | 1, le message aï¿½ transmettre</dd>
+     * <dt> -mess m  </dt><dd> m (int) constitue de 1 aï¿½ 6 digits, le nombre de bits du message "aleatoire" aï¿½Â transmettre</dd> 
      * <dt> -s </dt><dd> pour demander l'utilisation des sondes d'affichage</dd>
      * <dt> -seed v </dt><dd> v (int) d'initialisation pour les generateurs aleatoires</dd> 
      * </dl>
@@ -142,7 +155,7 @@ public class Simulateur {
     				messageAleatoire = false;
     				nbBitsMess = args[i].length();
     			} 
-    			else if (args[i].matches("[0-9]{1,6}")) { // de 1 a  6 chiffres
+    			else if (args[i].matches("[0-9]{1,6}")) { // de 1 aï¿½ 6 chiffres
     				messageAleatoire = true;
     				nbBitsMess = Integer.valueOf(args[i]);
     				if (nbBitsMess < 1) 
@@ -167,7 +180,29 @@ public class Simulateur {
      * @throws Exception si un probleme survient lors de l'execution
      *
      */ 
-    public void execute() throws Exception {      
+    public void execute() throws Exception {  
+    	
+    	if (analogique == true) {
+			source.connecter(emetteur);
+			emetteur.connecter(transmetteurAnalogique);
+			transmetteurAnalogique.connecter(recepteur);
+			recepteur.connecter(destination);
+			// connexion des sondes si l'affichage est active
+			if (affichage) {
+				source.connecter(new SondeLogique("Source", 200));
+				emetteur.connecter(new SondeAnalogique("Emetteur"));
+				transmetteurAnalogique.connecter(new SondeAnalogique("Transmetteur"));
+				recepteur.connecter(new SondeLogique("Recepteur", 200));
+			}
+		} else {
+			source.connecter(transmetteurLogique);
+			transmetteurLogique.connecter(destination);
+			// connexion des sondes si l'affichage est active
+			if (affichage) {
+				source.connecter(new SondeLogique("Source", 200));
+				transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
+			}
+		}
          
     	// typiquement source.emettre(); 
       	source.emettre();
@@ -211,10 +246,10 @@ public class Simulateur {
    
    
    
-    /** La fonction main instancie un Simulateur a  l'aide des
+    /** La fonction main instancie un Simulateur a l'aide des
      *  arguments parametres et affiche le resultat de l'execution
      *  d'une transmission.
-     *  @param args les differents arguments qui serviront a  l'instanciation du Simulateur.
+     *  @param args les differents arguments qui serviront a l'instanciation du Simulateur.
      */
     public static void main(String [] args) { 
 
@@ -231,7 +266,7 @@ public class Simulateur {
     	try {
     		simulateur.execute();
     		String s = "java  Simulateur  ";
-    		for (int i = 0; i < args.length; i++) { //copier tous les parametres de simulation
+    		for (int i = 0; i < args.length; i++) { // copier tous les parametres de simulation
     			s += args[i] + "  ";
     		}
     		System.out.println(s + "  =>   TEB : " + simulateur.calculTauxErreurBinaire());

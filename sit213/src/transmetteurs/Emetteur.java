@@ -127,7 +127,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 				}
 			}
 		}
-	}	
+	}
 
 	/**
 	 * Convertit l'information booleenne recue en analogique NRZT.
@@ -168,7 +168,5 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 				}
 			}
 		}
-		
 	}
-
 }
