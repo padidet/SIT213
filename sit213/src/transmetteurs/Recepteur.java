@@ -58,11 +58,9 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 		informationGeneree = new Information<>();
 		if(Objects.equals(forme,"RZ")) {
 			convertFromRZ();
-		}
-		if(Objects.equals(forme, "NRZ")) {
+		} else if(Objects.equals(forme, "NRZ")) {
 			convertFromNRZ();
-		}
-		if(Objects.equals(forme,"NRZT")) {
+		} else if(Objects.equals(forme,"NRZT")) {
 			convertFromNRZT();
 		}
 	}
@@ -83,7 +81,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	 * Elle intervient typiquement apres formatage.
 	 */
 	public void emettre() throws InformationNonConformeException {
-		for (DestinationInterface<Boolean> destinationConnectee : destinationsConnectees) {
+		for (DestinationInterface<Boolean> destinationConnectee: destinationsConnectees) {
 			destinationConnectee.recevoir(informationEmise);
 		}
 	}
@@ -92,7 +90,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	 * Convertit l'information analogique RZ recue en booleen.
 	 */
 	protected void convertFromRZ() {
-		for(float value: informationRecue) {
+		for (float value: informationRecue) {
 			float somme = 0;
 			float moyenne = 0;
 			// float seuilTolerence = 0; // Le seuil de tolérence a définir pour plus tard;
@@ -121,7 +119,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	 * Convertit l'information analogique NRZ recue en booleen.
 	 */
 	protected void convertFromNRZ() {
-		for(float value: informationRecue) {
+		for (float value: informationRecue) {
 			float somme = 0;
 			float moyenne = 0;
 			// float seuilTolerence = 0; // Le seuil de tolérence a définir pour plus tard;
@@ -145,7 +143,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	 * Convertit l'information analogique NRZT recue en booleen.
 	 */
 	protected void convertFromNRZT() {
-		for(float value: informationRecue) {
+		for (float value: informationRecue) {
 			float somme = 0;
 			float moyenne = 0;
 			// float seuilTolerence = 0; // TODO: seuil de tolerence a définir

@@ -56,18 +56,14 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 */
 	public void convert() {
 		informationGeneree = new Information<>();
-		
+
 		if(Objects.equals(forme,"RZ")) {
 			convertToRZ();
-		}
-		if(Objects.equals(forme, "NRZ")) {
+		} else if(Objects.equals(forme, "NRZ")) {
 			convertToNRZ();
-		}
-		if(Objects.equals(forme,"NRZT")) {
+		} else if(Objects.equals(forme,"NRZT")) {
 			convertToNRZT();
 		}
-		
-		
 	}
 
 	/**
@@ -79,7 +75,6 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 		informationRecue = information;
 		convert();
 		emettre();
-		
 	}
 
 	/**
@@ -97,8 +92,8 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 * Convertit l'information booleenne recue en analogique RZ.
 	 */
 	protected void convertToRZ() {
-		for(Boolean value: informationRecue) {
-			if(value == true) {
+		for (Boolean value: informationRecue) {
+			if (value == true) {
 				for(int i = 0; i < nbEch; i++) {
 					if(i < nbEch/3 || i >= nbEch * (2/3)) {
 						informationGeneree.add(Amin);
@@ -120,8 +115,8 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 * Convertit l'information booleenne recue en analogique NRZ.
 	 */
 	protected void convertToNRZ() {
-		for(Boolean value:informationRecue) {
-			if(value == true) {
+		for (Boolean value:informationRecue) {
+			if (value == true) {
 				for(int i = 0; i < nbEch; i++) {
 					informationGeneree.add(Amax);
 				}
@@ -138,9 +133,9 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 * Convertit l'information booleenne recue en analogique NRZT.
 	 */
 	protected void convertToNRZT() {
-		if(informationRecue.nbElements()<2) {
+		if (informationRecue.nbElements() < 2) {
 			
-			float moyenne = (Amax+Amin)/2;
+			float moyenne = (Amax + Amin) / 2;
 			float coefMax = Amax - moyenne;
 			float coefMin = moyenne - Amin;
 			float prec = moyenne;
@@ -160,9 +155,9 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 			}
 			else 
 			{
-				for(int i=0; i<nbEch; i++) {
+				for (int i = 0; i < nbEch; i++) {
 					
-					if(i < nbEch*2/3) {
+					if(i < nbEch * 2/3) {
 						prec = Amin;
 						informationGeneree.add(Amin);
 					}
