@@ -101,15 +101,15 @@ public class Simulateur {
     	} else {
     		source = new SourceFixe(messageString);
     	}
-    	
-    	if(analogique == true) {
+
+    	if (analogique) {
     		emetteur = new Emetteur(forme, nbEch, Amin, Amax);
     		transmetteurAnalogique = new TransmetteurAnalogique();
     		recepteur = new Recepteur(forme, nbEch, Amin, Amax);
     	}
     	else {
     		transmetteurLogique = new TransmetteurParfait(); 
-			}
+		}
     	destination = new DestinationFinale();
     }   
 
@@ -127,7 +127,7 @@ public class Simulateur {
      * <dt> -s </dt><dd> pour demander l'utilisation des sondes d'affichage</dd>
      * <dt> -seed v </dt><dd> v (int) d'initialisation pour les generateurs aleatoires</dd>
      * <dt> -form f </dt><dd> f (String) de valeur "RZ", "NRZ" ou "NRZT", la forme d'onde dans le cas analogique</dd>
-     * <dt> -nbEch ne</dt><dd> ne (int) nombre entier positif, le nombre d'echantillons par bit</dd>
+     * <dt> -nbEch ne</dt><dd> ne (int) nombre entier positif, le nombre d'echantillons par bit (rend le message analogique si spécifié)</dd>
      * <dt> -ampl min max</dt><dd> min (float) et max (float) flottants tels que min est strictement inférieur a max, les amplitudes min et max</dd>
      *
      * @throws ArgumentsException si un des arguments est incorrect.
@@ -139,7 +139,7 @@ public class Simulateur {
     		if (args[i].matches("-s")) {
     			affichage = true;
     		}
-    		
+
     		else if (args[i].matches("-seed")) {
     			aleatoireAvecGerme = true;
     			i++; 
@@ -151,7 +151,6 @@ public class Simulateur {
     				throw new ArgumentsException("Valeur du parametre -seed  invalide : " + args[i]);
     			}           		
     		}
-
     		else if (args[i].matches("-mess")) {
     			i++; 
     			// traiter la valeur associee
@@ -169,7 +168,7 @@ public class Simulateur {
     			else 
     				throw new ArgumentsException("Valeur du parametre -mess invalide : " + args[i]);
     		}
-    		
+
     		else if (args[i].matches("-form")) {
     			i++;
     			// traiter la valeur associee
@@ -179,19 +178,20 @@ public class Simulateur {
     			else
     				throw new ArgumentsException("Valeur du parametre -form invalide : " + args[i]);
     		}
-    		
+
     		else if (args[i].matches("-nbEch")) {
     			i++;
     			// traiter la valeur associee
     			if (args[i].matches("[0-9]+")) { // entier
     				nbEch = Integer.valueOf(args[i]);
+        			analogique = true;
     				if (nbEch < 1)
     					throw new ArgumentsException("Valeur du parametre -nbEch invalide : " + nbEch);
     			}
     			else
     				throw new ArgumentsException("Valeur du parametre -nbEch invalide : " + args[i]);
     		}
-    		
+
     		else if (args[i].matches("-ampl")) {
     			i += 2;
     			// traiter la premiere valeur associee
@@ -229,7 +229,7 @@ public class Simulateur {
      */ 
     public void execute() throws Exception {  
     	
-    	if (analogique == true) {
+    	if (analogique) {
 			source.connecter(emetteur);
 			emetteur.connecter(transmetteurAnalogique);
 			transmetteurAnalogique.connecter(recepteur);
@@ -250,8 +250,7 @@ public class Simulateur {
 				transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
 			}
 		}
-         
-    	// typiquement source.emettre(); 
+
       	source.emettre();
     }
    
