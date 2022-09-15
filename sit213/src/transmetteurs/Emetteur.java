@@ -1,32 +1,54 @@
 package transmetteurs;
 
 import java.util.Objects;
+
 import destinations.DestinationInterface;
 import information.Information;
 import information.InformationNonConformeException;
 
+/**
+ * La classe Emetteur specialise la classe abstraite Transmetteur pour faire de l'emission.
+ * Un emetteur prend l'information generee par une source et la transmet a un autre transmetteur.
+ */
 public class Emetteur extends Transmetteur<Boolean, Float>{
+
+	/** Information contenant l'information recue par l'emetteur de la source, une fois formatee/convertie au format voulu */
 	private Information<Float> informationGeneree;
-	
+
+	/** Precise le format de generation de l'information voulu */ 
 	private String forme;
-	
+
+	/** Nombre d'echantillons avec lequel proceder a l'echantillonnage du signal */
 	private int nbEch;
-	
+
+	/** Valeur analogique minimale accessible par l'information (amplitude) */
 	private float Amin;
-	
+
+	/** Valeur analogique maximale accessible par l'information (amplitude) */
 	private float Amax;
 
+	/**
+	 * Le constructeur definit tous les attributs pour creer une instance de la classe.
+	 * 
+	 * @param forme
+	 * @param nbEch
+	 * @param Amin
+	 * @param Amax
+	 */
 	public Emetteur(String forme, int nbEch, float Amin, float Amax){
-		
-		
 		this.forme = forme;
 		this.nbEch = nbEch;
 		this.Amin = Amin;
 		this.Amax = Amax;
 	}
-	
+
+	/**
+	 * Convertit l'information recue en information generee selon le format voulu.
+	 * Le format est defini par l'attribut forme.
+	 */
 	public void convert() {
 		informationGeneree = new Information<>();
+		
 		if(Objects.equals(forme,"RZ")) {
 			convertToRZ();
 		}
@@ -36,17 +58,26 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 		if(Objects.equals(forme,"NRZT")) {
 			convertNRZT();
 		}
+		
+		
 	}
-	
+
+	/**
+	 * Methode principale de l'emetteur.
+	 * Elle sert a recevoir l'information d'une source, a la convertir au format voulu, puis a l'emettre vers le transmetteur suivant.
+	 */
 	@Override
 	public void recevoir(Information<Boolean> information) throws InformationNonConformeException {
-		// TODO Auto-generated method stub
 		informationRecue = information;
 		convert();
 		emettre();
 		
 	}
-	
+
+	/**
+	 * Methode d'emission de l'information generee vers un autre transmetteur.
+	 * Elle intervient typiquement apres formatage.
+	 */
 	@Override
 	public void emettre() throws InformationNonConformeException {
 		// TODO Auto-generated method stub
@@ -54,9 +85,12 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
             destinationConnectee.recevoir(informationEmise);
          }
 	}
-	
+
+	/**
+	 * Convertit l'information booleenne recue en RZ
+	 */
 	protected void convertToRZ() {
-		for(Boolean value:informationRecue) {
+		for(Boolean value: informationRecue) {
 			if(value == true) {
 				for(int i = 0; i < nbEch; i++) {
 					if(i < nbEch/3 || i >= nbEch * (2/3)) {
@@ -74,7 +108,10 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 			}
 		}
 	}
-	
+
+	/**
+	 * Convertit l'information booleenne recue en NRZ
+	 */
 	protected void convertToNRZ() {
 		for(Boolean value:informationRecue) {
 			if(value == true) {
@@ -89,7 +126,10 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 			}
 		}
 	}	
-	
+
+	/**
+	 * Convertit l'information booleenne recue en NRZT
+	 */
 	protected void convertNRZT() {
 		if(informationRecue.nbElements()<2) {
 			
@@ -130,4 +170,3 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 	}
 
 }
-
