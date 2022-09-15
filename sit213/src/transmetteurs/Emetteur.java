@@ -10,8 +10,8 @@ import information.InformationNonConformeException;
  * La classe Emetteur specialise la classe abstraite Transmetteur pour faire de l'emission.
  * Un emetteur prend l'information generee par une source et la transmet a un autre transmetteur.
  * 
- * @author: Groupe 3
- * @date: 2022/09/15
+ * @author groupeA3
+ * @date 2022/09/15
  */
 public class Emetteur extends Transmetteur<Boolean, Float> {
 

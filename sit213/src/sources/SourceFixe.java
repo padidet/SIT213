@@ -26,7 +26,7 @@ public class SourceFixe extends Source<Boolean> {
      * Constructeur d'une source fixe personnalisable.
      * Elle envoie un message personnalise en booleens.
      * 
-     * @param m - Message binaire a� envoyer (doit etre une chaine de 0 et de 1)
+     * @param m - Message binaire a envoyer (doit etre une chaine de 0 et de 1)
      * 
      * @throws ArgumentsException - Lorsque la chaine est non instanciee, vide ou contient autre chose que des 0 et des 1
      */

@@ -22,7 +22,7 @@ public class SourceAleatoire extends Source<Boolean> {
 
     /**
      * Constructeur d'une source aléatoire personnalisable.
-     * Elle envoie un message de longueur personnalisée en booléens.^
+     * Elle envoie un message de longueur personnalisée en booléens.
      * 0 et 1 sont équiprobables.
      * 
      * @param l - Longueur du message binaire à envoyer
@@ -41,7 +41,7 @@ public class SourceAleatoire extends Source<Boolean> {
      * C'est la graine qui définit les probabilités des symboles.
      * 
      * @param l - Longueur du message binaine à envoyer
-     * @param seed - Graine pour l'aléatoire
+     * @param seed - Graine pour l'aleatoire
      */
     public SourceAleatoire (int l, int seed) {
         informationGeneree = new Information<Boolean>();

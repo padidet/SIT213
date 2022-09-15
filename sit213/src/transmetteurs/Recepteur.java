@@ -10,8 +10,8 @@ import information.InformationNonConformeException;
  * La classe Recepteur specialise la classe abstraite Transmetteur pour faire de la reception.
  * Un recepteur prend l'information transmise par un autre transmetteur et la transmet a une destination.
  * 
- * @author: Groupe 3
- * @date: 2022/09/15
+ * @author groupeA3
+ * @date 2022/09/15
  */
 public class Recepteur extends Transmetteur<Float, Boolean> {
 
