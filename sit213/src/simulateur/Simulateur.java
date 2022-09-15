@@ -8,8 +8,10 @@ import information.Information;
 import sources.Source;
 import sources.SourceFixe;
 import sources.SourceAleatoire;
-
+import transmetteurs.Emetteur;
+import transmetteurs.Recepteur;
 import transmetteurs.Transmetteur;
+import transmetteurs.TransmetteurAnalogique;
 import transmetteurs.TransmetteurParfait;
 
 import visualisations.*;
@@ -41,6 +43,12 @@ public class Simulateur {
     
     /** la chaine de caracteres correspondant a  m dans l'argument -mess m */
     private String messageString = "100";
+    
+    private String forme = "RZ";
+    private int nbEch = 30;
+    private float Amax = 1.0f;
+    private float Amin = 0.0f;
+    		
    
    	
     /** le  composant Source de la chaine de transmission */
@@ -51,6 +59,12 @@ public class Simulateur {
     
     /** le  composant Destination de la chaine de transmission */
     private Destination <Boolean>  destination = null;
+    
+    private Transmetteur<Float, Float> transmetteurAnalogique = null;
+    
+    private boolean analogique = false;
+    private Transmetteur<Boolean,Float> emetteur = null;
+    private Transmetteur<Float,Boolean> recepteur = null;
    	
    
     /** Le constructeur de Simulateur construit une chaine de
@@ -78,19 +92,17 @@ public class Simulateur {
     	} else {
     		source = new SourceFixe(messageString);
     	}
-
-    	if (affichage) {
-    		source.connecter(new SondeLogique("Source", 200));
+    	
+    	if(analogique == true) {
+    		emetteur = new Emetteur(forme, nbEch, Amin, Amax);
+    		transmetteurAnalogique = new TransmetteurAnalogique();
+    		recepteur = new Recepteur(forme, nbEch, Amin, Amax);
     	}
-
+    	else {
+    		transmetteurLogique = new TransmetteurParfait(); 
+			}
     	destination = new DestinationFinale();
-    	transmetteurLogique = new TransmetteurParfait();
-
-    	source.connecter(transmetteurLogique);
-    	transmetteurLogique.connecter(destination);
-    	if (affichage) {
-    		transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
-    	}
+    	
 
     }
    
@@ -167,7 +179,29 @@ public class Simulateur {
      * @throws Exception si un probleme survient lors de l'execution
      *
      */ 
-    public void execute() throws Exception {      
+    public void execute() throws Exception {  
+    	
+    	if (analogique == true) {
+			source.connecter(emetteur);
+			emetteur.connecter(transmetteurAnalogique);
+			transmetteurAnalogique.connecter(recepteur);
+			recepteur.connecter(destination);
+			// connexion des sondes si l'affichage est activé
+			if (affichage) {
+				source.connecter(new SondeLogique("Source", 200));
+				emetteur.connecter(new SondeAnalogique("Emetteur"));
+				transmetteurAnalogique.connecter(new SondeAnalogique("Transmetteur"));
+				recepteur.connecter(new SondeLogique("Recepteur", 200));
+			}
+		} else {
+			source.connecter(transmetteurLogique);
+			transmetteurLogique.connecter(destination);
+			// connexion des sondes si l'affichage est activé
+			if (affichage) {
+				source.connecter(new SondeLogique("Source", 200));
+				transmetteurLogique.connecter(new SondeLogique("Transmetteur", 200));
+			}
+		}
          
     	// typiquement source.emettre(); 
       	source.emettre();
