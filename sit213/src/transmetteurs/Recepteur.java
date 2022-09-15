@@ -48,6 +48,11 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	/**
 	 * Convertit l'information (analogique) recue en information (booleenne) generee selon le format voulu.
 	 * Le format est defini par l'attribut forme.
+	 * 
+	 * Valeurs reconnues :
+	 * - "RZ"
+	 * - "NRZ"
+	 * - "NRZT"
 	 */
 	public void convert() {
 		informationGeneree = new Information<>();
