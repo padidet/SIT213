@@ -46,7 +46,8 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 	public void recevoir(Information<Boolean> information) throws InformationNonConformeException {
 		// TODO Auto-generated method stub
 		informationRecue = information;
-		
+		convert();
+		emettre();
 		
 	}
 	
@@ -94,31 +95,37 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 	}	
 	
 	protected void convertNRZT() {
-		for(Boolean value:informationRecue) {
+		if(informationRecue.nbElements()<2) {
 			
-			if(value == true) {
-				for(int i = 0; i < nbEch; i++) {
-					if(i < nbEch / 3) {
-						informationGeneree.add(i * (Amax - ((Amax + Amin) / 2))/ (nbEch / 3) + (Amax + Amin) / 2);
-					}
-					else if(i < 2 * nbEch/3 ) {
+			float moyenne = (Amax+Amin)/2;
+			float coefMax = Amax - moyenne;
+			float coefMin = moyenne - Amin;
+			float prec = moyenne;
+			
+			if(informationRecue.iemeElement(0)) { 
+				for(int i=0; i<nbEch; i++) {
+					
+					if(i<nbEch*2/3) {
+						prec = Amax;
 						informationGeneree.add(Amax);
 					}
-					else {
-						informationGeneree.add(i * (Amin-Amax) / (2 * nbEch/3 ) + Amax + (Amax - Amin));
+					if(i> nbEch * 2/3) {
+						prec -= (3*coefMax/nbEch);
+						informationGeneree.add(prec);
 					}
 				}
 			}
-			else {
-				for(int i = 0; i < nbEch; i++) {
-					if(i < nbEch /3) {
-						informationGeneree.add(i * (Amin - ((Amax + Amin) / 2))/ (nbEch / 3) + (Amax - ((Amax + Amin))));
-					}
-					else if(i < 2 * nbEch/3 ) {
+			else 
+			{
+				for(int i=0; i<nbEch; i++) {
+					
+					if(i<nbEch*2/3) {
+						prec = Amin;
 						informationGeneree.add(Amin);
 					}
-					else {
-						informationGeneree.add(i * (Amax - Amin) / (2 * nbEch/3 ) + Amin - (Amax - Amin));
+					if(i> nbEch * 2/3) {
+						prec += (3*Math.abs(coefMin)/nbEch);
+						informationGeneree.add(prec);
 					}
 				}
 			}
