@@ -64,8 +64,7 @@ public class Recepteur extends Transmetteur<Float, Boolean>{
 	 */
 	protected void convertToRZ() {
 		
-		
-		for(float value:informationRecue) {
+		for(int j = 0; j < informationRecue.nbElements(); j += nbEch) {
 			float somme = 0;
 			float moyenne = 0;
 			// float seuilTolerence = 0; // Le seuil de tolérence a définir pour plus tard;
@@ -74,7 +73,7 @@ public class Recepteur extends Transmetteur<Float, Boolean>{
 				// On cherche parmi les valeurs au milieu du symbole
 				// si la moyenne est égale à Amax (sans seuil de tolérence):
 				if(nbEch/3 < i &&  i < 2 * nbEch/3) {
-					somme += value;
+					somme += informationRecue.iemeElement(j + i);	// (j + i) correspond à l'indice total.
 				}
 			}
 			moyenne = somme/(nbEch/3);
@@ -97,12 +96,12 @@ public class Recepteur extends Transmetteur<Float, Boolean>{
 	 * Fonction permettant de convertir du NRZ en numérique.
 	 */
 	protected void convertToNRZ() {
-		for(float value:informationRecue) {
+		for(int j = 0; j < informationRecue.nbElements(); j += nbEch) {
 			float somme = 0;
 			float moyenne = 0;
 			// float seuilTolerence = 0; // Le seuil de tolérence a définir pour plus tard;
 			for(int i = 0; i < nbEch; i++) {
-				somme += value;
+				somme += informationRecue.iemeElement(j + i);
 			}
 			moyenne = somme/(nbEch);
 			if(moyenne >= Amax) {		// Remplacer (Amax) par (Amax - seuilTolerence) 
@@ -124,7 +123,7 @@ public class Recepteur extends Transmetteur<Float, Boolean>{
 	 * Fonction permettant de convertir du NRZT en numérique.
 	 */
 	protected void convertNRZT() {
-		for(float value:informationRecue) {
+		for(int j = 0; j < informationRecue.nbElements(); j += nbEch) {
 			float somme = 0;
 			float moyenne = 0;
 			// float seuilTolerence = 0; // Le seuil de tolérence a définir pour plus tard;
@@ -133,7 +132,7 @@ public class Recepteur extends Transmetteur<Float, Boolean>{
 				// On cherche parmi les valeurs au milieu du symbole
 				// si la moyenne est égale à Amax (sans seuil de tolérence):
 				if(nbEch/3 < i &&  i < 2 * nbEch/3) {
-					somme += value;
+					somme += informationRecue.iemeElement(j + i);
 				}
 			}
 			moyenne = somme/(nbEch/3);

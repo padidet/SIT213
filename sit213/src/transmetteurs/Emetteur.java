@@ -90,6 +90,13 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 		}
 	}	
 	
+	protected void convertNRZTv2(){
+		// Pattern des courbes:
+		
+		
+		
+	}
+	
 	protected void convertNRZT() {
 		if(informationRecue.nbElements()<2) {
 			
@@ -126,8 +133,6 @@ public class Emetteur extends Transmetteur<Boolean, Float>{
 				}
 			}
 		}
-		
 	}
-
 }
 
