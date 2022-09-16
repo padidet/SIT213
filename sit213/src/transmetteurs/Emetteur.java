@@ -1,7 +1,5 @@
 package transmetteurs;
 
-import java.util.Objects;
-
 import destinations.DestinationInterface;
 import information.Information;
 import information.InformationNonConformeException;
@@ -57,11 +55,11 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	public void convert() {
 		informationGeneree = new Information<>();
 
-		if(Objects.equals(forme,"RZ")) {
+		if (forme.equals("RZ")) {
 			convertToRZ();
-		} else if(Objects.equals(forme, "NRZ")) {
+		} else if (forme.equals("NRZ")) {
 			convertToNRZ();
-		} else if(Objects.equals(forme,"NRZT")) {
+		} else if (forme.equals("NRZT")) {
 			convertToNRZT();
 		}
 	}
@@ -96,7 +94,10 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 		for (Boolean value: informationRecue) {
 			if (value == true) {
 				for(int i = 0; i < nbEch; i++) {
-					if(i < nbEch/3 || i >= nbEch * (2/3)) {
+					if (i < nbEch/3) {
+						informationGeneree.add(Amin);
+					}
+					else if (i> 2*nbEch/3) {
 						informationGeneree.add(Amin);
 					}
 					else {
@@ -117,13 +118,11 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 */
 	protected void convertToNRZ() {
 		for (Boolean value:informationRecue) {
-			if (value == true) {
-				for(int i = 0; i < nbEch; i++) {
+			for(int i = 0; i < nbEch; i++) {
+				if(value == true) {
 					informationGeneree.add(Amax);
 				}
-			}
-			else {
-				for(int i = 0; i < nbEch; i++) {
+				else {
 					informationGeneree.add(Amin);
 				}
 			}
@@ -141,14 +140,14 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 			float coefMin = moyenne - Amin;
 			float prec = moyenne;
 			
-			if(informationRecue.iemeElement(0)) { 
-				for(int i = 0; i < nbEch; i++) {
+			if (informationRecue.iemeElement(0)) { 
+				for (int i = 0; i < nbEch; i++) {
 					
-					if(i < nbEch*2/3) {
+					if (i < nbEch * 2/3) {
 						prec = Amax;
 						informationGeneree.add(Amax);
 					}
-					if(i > nbEch * 2/3) {
+					if (i > nbEch * 2/3) {
 						prec -= (3*coefMax/nbEch);
 						informationGeneree.add(prec);
 					}
@@ -158,11 +157,11 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 			{
 				for (int i = 0; i < nbEch; i++) {
 					
-					if(i < nbEch * 2/3) {
+					if (i < nbEch * 2/3) {
 						prec = Amin;
 						informationGeneree.add(Amin);
 					}
-					if(i > nbEch * 2/3) {
+					if (i > nbEch * 2/3) {
 						prec += (3 * Math.abs(coefMin) / nbEch);
 						informationGeneree.add(prec);
 					}
