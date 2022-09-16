@@ -220,9 +220,9 @@ public class Simulateur {
     	}
       
     }
-     
-    
-   	
+
+
+
     /** La methode execute effectue un envoi de message par la source
      * de la chaine de transmission du Simulateur.
      *
@@ -255,14 +255,14 @@ public class Simulateur {
 
       	source.emettre();
     }
-   
-   	   	
-   	
+
+
+
     /** La methode qui calcule le taux d'erreur binaire en comparant
      * les bits du message emis avec ceux du message recu.
      * 
      * En cas de difference de longueur, chaque bit en trop ou en moins sera compte faux.
-     *
+     * 
      * @return  La valeur du Taux dErreur Binaire.
      */   	   
     public float calculTauxErreurBinaire() {
