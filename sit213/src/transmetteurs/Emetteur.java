@@ -1,5 +1,7 @@
 package transmetteurs;
 
+import java.util.*;
+
 import destinations.DestinationInterface;
 import information.Information;
 import information.InformationNonConformeException;
@@ -133,58 +135,23 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 * Convertit l'information booleenne recue en analogique NRZT.
 	 */
 	protected void convertToNRZT() {
-		int echExtra = nbEch % 3;
-		int periodeCourte = nbEch / 3; // nombre d'echantillons du permier et du troisieme tiers de chaque symbole
-		int periodeLongue = periodeCourte + echExtra; // nombre d'echantillons du deuxieme tiers de chaque symbole
-		// periodeLongue est plus long que periodeCourte de 1 ou de 2 en cas de non-divisibilité
-		float difference = Amax - Amin;
-		float moyenne = (Amax + Amin) / 2;
-		float coef = difference / (2*periodeCourte);
-		boolean prec = informationRecue.iemeElement(0);
-
-		if (prec) {
-			generationAffine(coef, periodeCourte, moyenne);
-			generationAffine(0, periodeLongue, Amax);
-		} else {
-			generationAffine(-coef, periodeCourte, moyenne);
-			generationAffine(0, periodeLongue, Amin);
-		}
-
 		for (int i = 0; i < informationRecue.nbElements(); i++) {
-			if (i + 1 >= informationRecue.nbElements()) { // si prec est le dernier symbole
-				if (prec)
-					generationAffine(0, periodeCourte, Amax);
-				else
-					generationAffine(0, periodeCourte, Amin);
-				break;
+			for (int j = 1; j <= nbEch; j++) {
+				if (informationRecue.iemeElement(i)) {
+					if (j <= nbEch / 3) {
+						informationGeneree.add(Amin + ((Amax - Amin) / (nbEch / 3)) * (j - 1));
+					}
+					else if ((j > nbEch / 3) && (j <= nbEch / 3 * 2)) {
+						informationGeneree.add(Amax);
+					}
+					else {
+						informationGeneree.add(Amin + ((Amax - Amin) / (nbEch / 3)) * (nbEch - j));
+					}
+				}
+				else {
+					informationGeneree.add(Amin);	
+				}
 			}
-
-			if (prec && informationRecue.iemeElement(i)) {
-				generationAffine(0, nbEch, Amax);
-			} else if (!prec && !informationRecue.iemeElement(i)) {
-				generationAffine(0, nbEch, Amin);
-			} else if (!prec && informationRecue.iemeElement(i)) {
-				generationAffine(coef, 2*periodeCourte, Amin);
-				generationAffine(0, periodeLongue, Amax);
-			} else {
-				generationAffine(-coef, 2*periodeCourte, Amax);
-				generationAffine(0, periodeLongue, Amin);
-			}
-
-			prec = informationRecue.iemeElement(i + 1);
-		}
-	}
-
-	/**
-	 * Ajoute une portion de droite affine a l'information generee
-	 * 
-	 * @param a - Le coefficient directeur
-	 * @param t - La taille de l'intervalle
-	 * @param b - L'ordonnee a l'origine
-	 */
-	private void generationAffine(float a, int t, float b) {
-		for (int x = 0; x < t; x++) {
-			informationGeneree.add(a*x + b);
 		}
 	}
 }

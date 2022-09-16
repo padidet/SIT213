@@ -51,10 +51,10 @@ public class Simulateur {
     private int nbEch = 30;
 
     /** amplitude maximale correspondant a max dans l'argument -ampl min max */
-    private float Amax = 1.0f;
+    private float Amax = 5.0f;
 
     /** amplitude minimale correspondant a min dans l'argument -ampl min max */
-    private float Amin = 0.0f;
+    private float Amin = -5.0f;
 
     /** le  composant Source de la chaine de transmission */
     private Source <Boolean> source = null;
