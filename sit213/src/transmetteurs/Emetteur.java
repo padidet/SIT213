@@ -96,7 +96,10 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 		for (Boolean value: informationRecue) {
 			if (value == true) {
 				for(int i = 0; i < nbEch; i++) {
-					if(i < nbEch/3 || i >= nbEch * (2/3)) {
+					if(i < nbEch/3) {
+						informationGeneree.add(Amin);
+					}
+					else if(i> 2*nbEch/3) {
 						informationGeneree.add(Amin);
 					}
 					else {
@@ -117,13 +120,11 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 */
 	protected void convertToNRZ() {
 		for (Boolean value:informationRecue) {
-			if (value == true) {
-				for(int i = 0; i < nbEch; i++) {
+			for(int i = 0; i < nbEch; i++) {
+				if(value == true) {
 					informationGeneree.add(Amax);
 				}
-			}
-			else {
-				for(int i = 0; i < nbEch; i++) {
+				else {
 					informationGeneree.add(Amin);
 				}
 			}
