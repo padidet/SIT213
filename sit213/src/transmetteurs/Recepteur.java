@@ -92,27 +92,41 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	 * Convertit l'information analogique RZ recue en booleen.
 	 */
 	protected void convertFromRZ() {
+		//float valeurSymbole = 0.0f;
 		for (float value: informationRecue) {
 			float somme = 0;
 			float moyenne = 0;
+			int indice = 0;
 			// float seuilTolerence = 0; // Le seuil de tolerence a definir pour plus tard;
+			
+			if(indice < nbEch/3 && indice > 2 * nbEch/3) {
+				somme += value;
+			}
+			indice ++;
+			
+			/*
 			for(int i = 0; i < nbEch; i++) {
 				
 				// On cherche parmi les valeurs au milieu du symbole
-				// si la moyenne est egale a� Amax (sans seuil de tolerence):
+				// si la moyenne est egale a Amax (sans seuil de tolerence):
 				if(nbEch/3 < i &&  i < 2 * nbEch/3) {
 					somme += value;	// (j + i) correspond à l'indice total.
 				}
 			}
-			moyenne = somme/(nbEch/3);
-			if(moyenne >= Amax) { // Remplacer Amax par Amax - seuilTolerence 
-				informationGeneree.add(true);
-			}
-			else if(moyenne <= Amin) {
-				informationGeneree.add(false);
-			}
-			else {
-				informationGeneree.add(false);
+			*/
+			
+			if(indice == nbEch) {
+				moyenne = somme/(nbEch/3);
+				if(moyenne >= Amax) { // Remplacer Amax par Amax - seuilTolerence 
+					informationGeneree.add(true);
+				}
+				else if(moyenne <= Amin) {
+					informationGeneree.add(false);
+				}
+				else {
+					informationGeneree.add(false);
+				}
+				indice = 0;
 			}
 		}
 	}
@@ -121,6 +135,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	 * Convertit l'information analogique NRZ recue en booleen.
 	 */
 	protected void convertFromNRZ() {
+		int compteur = nbEch;
 		for (float value: informationRecue) {
 			float somme = 0;
 			float moyenne = 0;
@@ -129,14 +144,18 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 				somme += value;
 			}
 			moyenne = somme/(nbEch);
-			if(moyenne >= Amax) { // Remplacer (Amax) par (Amax - seuilTolerence) 
-				informationGeneree.add(true);
-			}
-			else if(moyenne <= Amin) { // Remplacer (Amin) par (Amin - seuilTolerence)
-				informationGeneree.add(false);
-			}
-			else {
-				informationGeneree.add(false); // Le cas où le symbole est centré en 0. N'arrive jamais sans bruit normalement.
+			compteur --;
+			if(compteur == 0) {
+				if(moyenne >= Amax) { // Remplacer (Amax) par (Amax - seuilTolerence) 
+					informationGeneree.add(true);
+				}
+				else if(moyenne <= Amin) { // Remplacer (Amin) par (Amin - seuilTolerence)
+					informationGeneree.add(false);
+				}
+				else {
+					informationGeneree.add(false); // Le cas où le symbole est centré en 0. N'arrive jamais sans bruit normalement.
+				}
+				compteur = nbEch;
 			}
 		}
 	}	
@@ -145,6 +164,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	 * Convertit l'information analogique NRZT recue en booleen.
 	 */
 	protected void convertFromNRZT() {
+		int compteur = nbEch;
 		for (float value: informationRecue) {
 			float somme = 0;
 			float moyenne = 0;
@@ -157,12 +177,16 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 					somme += value;
 				}
 			}
+			compteur --;
 			moyenne = somme/(nbEch/3);
-			if(moyenne >= Amax) { // TODO: A terme, remplacer Amax par Amax - seuilTolerence 
-				informationGeneree.add(true);
-			}
-			else {
-				informationGeneree.add(false);
+			if(compteur == 0) {
+				if(moyenne >= Amax) { // TODO: A terme, remplacer Amax par Amax - seuilTolerence 
+					informationGeneree.add(true);
+				}
+				else {
+					informationGeneree.add(false);
+				}
+				compteur = nbEch;
 			}
 		}
 	}
