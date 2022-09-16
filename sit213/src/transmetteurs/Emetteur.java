@@ -1,5 +1,7 @@
 package transmetteurs;
 
+import java.util.*;
+
 import destinations.DestinationInterface;
 import information.Information;
 import information.InformationNonConformeException;
@@ -133,40 +135,24 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 * Convertit l'information booleenne recue en analogique NRZT.
 	 */
 	protected void convertToNRZT() {
-		if (informationRecue.nbElements() < 2) {
-			
-			float moyenne = (Amax + Amin) / 2;
-			float coefMax = Amax - moyenne;
-			float coefMin = moyenne - Amin;
-			float prec = moyenne;
-			
-			if (informationRecue.iemeElement(0)) { 
-				for (int i = 0; i < nbEch; i++) {
-					
-					if (i < nbEch * 2/3) {
-						prec = Amax;
+		
+		for(int i = 0; i<informationRecue.nbElements(); i++){
+			for(int j = 1; j<=nbEch; j++){
+				if(informationRecue.iemeElement(i) == true){
+					if(j<=nbEch/3){
+						informationGeneree.add(Amin+((Amax-Amin)/(nbEch/3))*(j-1));
+					}
+					else if((j>nbEch/3)&&(j<=nbEch/3*2)){
 						informationGeneree.add(Amax);
 					}
-					if (i > nbEch * 2/3) {
-						prec -= (3*coefMax/nbEch);
-						informationGeneree.add(prec);
+					else{
+						informationGeneree.add(Amin+((Amax-Amin)/(nbEch/3))*(nbEch-j));
 					}
 				}
-			}
-			else 
-			{
-				for (int i = 0; i < nbEch; i++) {
-					
-					if (i < nbEch * 2/3) {
-						prec = Amin;
-						informationGeneree.add(Amin);
-					}
-					if (i > nbEch * 2/3) {
-						prec += (3 * Math.abs(coefMin) / nbEch);
-						informationGeneree.add(prec);
-					}
+				else{
+					informationGeneree.add(Amin);	
 				}
 			}
 		}
+		}
 	}
-}
