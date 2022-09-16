@@ -96,7 +96,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 		for(float value: informationRecue) {
 			float somme = 0;
 			float moyenne = 0;
-			// float seuilTolerence = 0; // Le seuil de tolérence a définir pour plus tard;
+			// float seuilTolerence = 0; // Le seuil de tolerence a definir pour plus tard;
 			for(int i = 0; i < nbEch; i++) {
 				
 				// On cherche parmi les valeurs au milieu du symbole
