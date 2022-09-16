@@ -94,13 +94,15 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	protected void convertFromRZ() {
 		//float valeurSymbole = 0.0f;
 		int indice = 0;
+		float somme = 0;
+		float moyenne = 0;
+		int nbEchUtils = 0;
 		for (float value: informationRecue) {
-			float somme = 0;
-			float moyenne = 0;
 			// float seuilTolerence = 0; // Le seuil de tolerence a definir pour plus tard;
 			
 			if(indice > nbEch/3 && indice < 2 * nbEch/3) {
 				somme += value;
+				nbEchUtils++;
 			}
 			indice++;
 			
@@ -116,7 +118,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 			*/
 			
 			if(indice == nbEch) {
-				moyenne = somme/(nbEch/3);
+				moyenne = somme/nbEchUtils;
 				if(moyenne >= Amax - (Amax/5)) { // Remplacer Amax par Amax - seuilTolerence 
 					informationGeneree.add(true);
 				}
@@ -127,6 +129,9 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 					informationGeneree.add(false);
 				}
 				indice = 0;
+				somme = 0;
+				moyenne = 0;
+				nbEchUtils = 0;
 			}
 		}
 	}
