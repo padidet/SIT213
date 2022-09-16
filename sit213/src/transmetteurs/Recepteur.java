@@ -83,6 +83,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	 * Elle intervient typiquement apres formatage.
 	 */
 	public void emettre() throws InformationNonConformeException {
+		informationEmise = informationGeneree;
 		for (DestinationInterface<Boolean> destinationConnectee : destinationsConnectees) {
 			destinationConnectee.recevoir(informationEmise);
 		}
@@ -99,7 +100,7 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 			for(int i = 0; i < nbEch; i++) {
 				
 				// On cherche parmi les valeurs au milieu du symbole
-				// si la moyenne est égale à Amax (sans seuil de tolérence):
+				// si la moyenne est egale a� Amax (sans seuil de tolerence):
 				if(nbEch/3 < i &&  i < 2 * nbEch/3) {
 					somme += value;	// (j + i) correspond à l'indice total.
 				}

@@ -88,6 +88,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 */
 	@Override
 	public void emettre() throws InformationNonConformeException {
+		informationEmise = informationGeneree;
 		for (DestinationInterface<Float> destinationConnectee : destinationsConnectees) {
             destinationConnectee.recevoir(informationEmise);
          }

@@ -60,7 +60,7 @@ public class Simulateur {
     private Source <Boolean> source = null;
 
     /** le  composant Transmetteur logique de la chaine de transmission */
-    private Transmetteur <Boolean, Boolean> transmetteurLogique = null;
+    private Transmetteur<Boolean, Boolean> transmetteurLogique = null;
 
     /** le  composant Transmetteur analogique de la chaine de transmission */
     private Transmetteur<Float, Float> transmetteurAnalogique = null;
