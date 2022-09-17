@@ -120,7 +120,7 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 		for (Boolean value:informationRecue) {
 			for(int i = 0; i < nbEch; i++) {
 				if(value == true) {
-					informationGeneree.add(Amax);
+					informationGeneree.add(Amax/* - bruit */);
 				}
 				else {
 					informationGeneree.add(Amin);
@@ -169,4 +169,9 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 			}
 		}
 	}
+	/* a faire pour le calcul du SNR
+	public Information<Float> getSignalAnalogiqueEntree(){
+		return this.informationGeneree;
+	}
+	//*/
 }

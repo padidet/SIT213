@@ -195,4 +195,10 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 			}
 		}
 	}
+	
+	/* a faire pour le calcul du SNR
+	public Information<Float> getSignalAnalogiqueSortie(){
+		return this.informationRecue;
+	}
+	//*/
 }

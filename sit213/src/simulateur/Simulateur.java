@@ -291,10 +291,17 @@ public class Simulateur {
     	return (float) (nbErreurs + (longueurMaximale - longueurMinimale)) / longueurMaximale;
     }
    
+    
+    /*
+    public float calculPuissanceBruit() {
+    	Information<Float> signalEmis = this.emetteur.getSignalAnalogiqueEntree();
+    	
+    	return 0.0f;
+    }
+   	//*/
    
-   
-   
-    /** La fonction main instancie un Simulateur a l'aide des
+
+	/** La fonction main instancie un Simulateur a l'aide des
      *  arguments parametres et affiche le resultat de l'execution
      *  d'une transmission.
      *  @param args les differents arguments qui serviront a l'instanciation du Simulateur.
