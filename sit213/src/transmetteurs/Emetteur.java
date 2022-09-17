@@ -1,5 +1,7 @@
 package transmetteurs;
 
+import java.util.*;
+
 import destinations.DestinationInterface;
 import information.Information;
 import information.InformationNonConformeException;
@@ -92,8 +94,8 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 */
 	protected void convertToRZ() {
 		for (Boolean value: informationRecue) {
-			if (value == true) {
-				for(int i = 0; i < nbEch; i++) {
+			if (value) {
+				for (int i = 0; i < nbEch; i++) {
 					if (i < nbEch/3) {
 						informationGeneree.add(Amin);
 					}
@@ -113,14 +115,15 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 		}
 	}
 
+	
 	/**
 	 * Convertit l'information booleenne recue en analogique NRZ.
 	 */
 	protected void convertToNRZ() {
-		for (Boolean value:informationRecue) {
-			for(int i = 0; i < nbEch; i++) {
-				if(value == true) {
-					informationGeneree.add(Amax/* - bruit */);
+		for (Boolean value: informationRecue) {
+			for (int i = 0; i < nbEch; i++) {
+				if (value) {
+					informationGeneree.add(Amax);
 				}
 				else {
 					informationGeneree.add(Amin);
@@ -128,48 +131,248 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 			}
 		}
 	}
-
+	
+	
 	/**
 	 * Convertit l'information booleenne recue en analogique NRZT.
 	 */
+	/*
 	protected void convertToNRZT() {
-		if (informationRecue.nbElements() < 2) {
-			
-			float moyenne = (Amax + Amin) / 2;
-			float coefMax = Amax - moyenne;
-			float coefMin = moyenne - Amin;
-			float prec = moyenne;
-			
-			if (informationRecue.iemeElement(0)) { 
-				for (int i = 0; i < nbEch; i++) {
-					
-					if (i < nbEch * 2/3) {
-						prec = Amax;
+		for (int i = 0; i < informationRecue.nbElements(); i++) {
+			for (int j = 1; j <= nbEch; j++) {
+				if (informationRecue.iemeElement(i)) {
+					if (j <= nbEch / 3) {
+						informationGeneree.add(Amin + ((Amax - Amin) / (nbEch / 3)) * (j - 1));
+					}
+					else if ((j > nbEch / 3) && (j <= nbEch / 3 * 2)) {
 						informationGeneree.add(Amax);
 					}
-					if (i > nbEch * 2/3) {
-						prec -= (3*coefMax/nbEch);
-						informationGeneree.add(prec);
+					else {
+						informationGeneree.add(Amin + ((Amax - Amin) / (nbEch / 3)) * (nbEch - j));
 					}
 				}
-			}
-			else 
-			{
-				for (int i = 0; i < nbEch; i++) {
-					
-					if (i < nbEch * 2/3) {
-						prec = Amin;
-						informationGeneree.add(Amin);
-					}
-					if (i > nbEch * 2/3) {
-						prec += (3 * Math.abs(coefMin) / nbEch);
-						informationGeneree.add(prec);
-					}
+				else {
+					informationGeneree.add(Amin);	
 				}
 			}
 		}
 	}
-	/* a faire pour le calcul du SNR
+	//*/
+	
+	/**
+	 * Il y a 8 modeles. Ce choix d'implementation est plus lourd mais plus simple.
+	 * 
+	 * Pour la première valeur:
+	 * H pour Haut;
+	 * B pour Bas;
+	 * 
+	 * Pour la seconde valeur:
+	 * S pour Stable en debut;
+	 * P pour Pente  en debut;
+	 * 
+	 * Pour la seconde valeur:
+	 * S pour Stable en fin;
+	 * P pour Pente  en fin;
+	 * 
+	 * Modele 1: HSS
+	 * Modele 2: HSP
+	 * Modele 3: HPS
+	 * Modele 4: HPP
+	 * Modele 5: BSS
+	 * Modele 6: BSP
+	 * Modele 7: BPS
+	 * Modele 8: BPP
+	 * 
+	 */
+	private float[] modeleNRZT(String modele, int nbEch, float Amax, float offSet) {
+		float[] valeursRetour = new float[nbEch];
+		// Modele 1:
+		if     (modele == "HSS") {
+			for(int i=0; i < nbEch; i++) {
+				valeursRetour[i] = Amax + offSet;
+			}
+		}
+		// Modele 2:
+		else if(modele == "HSP") {
+			for(int i=0; i < nbEch; i++) {
+				if(i < 2*nbEch/3) {
+					valeursRetour[i] = Amax + offSet;
+				}
+				else {
+					valeursRetour[i] = (Amax * (nbEch - i)/nbEch * 3) + offSet;
+				}
+			}
+		}
+		// Modele 3:
+		else if(modele == "HPS") {
+			for(int i=0; i < nbEch; i++) {
+				if(i < nbEch/3) {
+					valeursRetour[i] = (Amax * i/nbEch * 3) + offSet;
+				}
+				else {
+					valeursRetour[i] = Amax + offSet;
+				}
+			}
+		}
+		// Modele 4:
+		else if(modele == "HPP") {
+			for(int i=0; i < nbEch; i++) {
+				if(i < nbEch/3) {
+					valeursRetour[i] = (Amax * i/nbEch * 3) + offSet;
+				}
+				else if(i >= nbEch/3 && i < 2*nbEch/3){
+					valeursRetour[i] = Amax + offSet;
+				}
+				else {
+					valeursRetour[i] = (Amax * (nbEch - i)/nbEch * 3) + offSet;
+				}
+			}
+		}
+		// Modele 5:
+		else if(modele=="BSS") {
+			for(int i=0; i < nbEch; i++) {
+				valeursRetour[i] = -Amax + offSet;
+			}
+		}
+		// Modele 6:
+		else if(modele=="BSP") {
+			for(int i=0; i < nbEch; i++) {
+				if(i < 2 * nbEch/3) {
+					valeursRetour[i] = -Amax + offSet;
+				}
+				else {
+					valeursRetour[i] = -(Amax * (nbEch - i)/nbEch * 3) + offSet;
+				}
+			}
+		}
+		// Modele 7:
+		else if(modele=="BPS") {
+			for(int i=0; i < nbEch; i++) {
+				if(i < nbEch/3) {
+					valeursRetour[i] = -(Amax * i/nbEch * 3) + offSet;
+				}
+				else {
+					valeursRetour[i] = -Amax + offSet;
+				}
+			}
+		}
+		// Modele 8:
+		else if(modele=="BPP") {
+			for(int i=0; i < nbEch; i++) {
+				if(i < nbEch/3) {
+					valeursRetour[i] = -(Amax * i/nbEch * 3) + offSet;
+				}
+				else if(i >= nbEch/3 && i < 2*nbEch/3){
+					valeursRetour[i] = -Amax + offSet;
+				}
+				else {
+					valeursRetour[i] = -(Amax * (nbEch - i)/nbEch * 3) + offSet;
+				}
+			}
+		}
+		return valeursRetour;
+	}
+	
+	/**
+	 * Convertit l'information booleenne recue en analogique NRZT.
+	 * @implNote Dans le cas ou c'est le premier bit, on ajoute une pente montante ou descendante. Au total, il y aura 8 modeles.
+	 * message a utiliser pour tester NRZT : 0001011100 et 100010111001
+	 */
+	protected void convertToNRZT() {
+		
+		float offset = 0.0f; // Valeur que l'on peut modifier en tant que parametre.
+		for (int i = 0; i < informationRecue.nbElements(); i++) {
+			float[] listeValeurs = new float[nbEch];
+			
+			// Le cas ou c'est le premier element de la liste:
+			if(i == 0) {
+				if(informationRecue.iemeElement(i) == true) {
+					if(informationRecue.iemeElement(i+1) == null || informationRecue.iemeElement(i+1) == false) {
+						listeValeurs = modeleNRZT("HPP", nbEch, Amax, offset);
+					}
+					else {
+						listeValeurs = modeleNRZT("HPS", nbEch, Amax, offset);
+					}
+				}
+				else {
+					if(informationRecue.iemeElement(i+1) == null || informationRecue.iemeElement(i+1) == true) {
+						listeValeurs = modeleNRZT("BPP", nbEch, Amax, offset);
+					}
+					else {
+						listeValeurs = modeleNRZT("BPS", nbEch, Amax, offset);
+					}
+				}
+			}
+			
+			// Vérifie si c'est le dernier element de la liste:
+			else if (i == informationRecue.nbElements() - 1) {
+				if(informationRecue.iemeElement(i) == true) {
+					if(informationRecue.iemeElement(i-1) == null || informationRecue.iemeElement(i-1) == false) {
+						listeValeurs = modeleNRZT("HPP", nbEch, Amax, offset);
+					}
+					else {
+						listeValeurs = modeleNRZT("HSP", nbEch, Amax, offset);
+					}
+				}
+				else {
+					if(informationRecue.iemeElement(i-1) == null || informationRecue.iemeElement(i-1) == true) {
+						listeValeurs = modeleNRZT("BPP", nbEch, Amax, offset);
+					}
+					else {
+						listeValeurs = modeleNRZT("BSP", nbEch, Amax, offset);
+					}
+				}
+			}
+			
+			// L'element binaire est precede et succede par des elements binaires:
+			else {
+				if(informationRecue.iemeElement(i) == true) {
+					if(informationRecue.iemeElement(i-1) == true) {
+						if(informationRecue.iemeElement(i+1) == true) {
+							listeValeurs = modeleNRZT("HSS", nbEch, Amax, offset);
+						}
+						else {
+							listeValeurs = modeleNRZT("HSP", nbEch, Amax, offset);
+						}
+					}
+					else {
+						if(informationRecue.iemeElement(i+1) == true) {
+							listeValeurs = modeleNRZT("HPS", nbEch, Amax, offset);
+						}
+						else {
+							listeValeurs = modeleNRZT("HPP", nbEch, Amax, offset);
+						}
+					}
+				}
+				else {
+					if(informationRecue.iemeElement(i-1) == true) {
+						if(informationRecue.iemeElement(i+1) == true) {
+							listeValeurs = modeleNRZT("BPP", nbEch, Amax, offset);
+						}
+						else {
+							listeValeurs = modeleNRZT("BPS", nbEch, Amax, offset);
+						}
+					}
+					else {
+						if(informationRecue.iemeElement(i+1) == true) {
+							listeValeurs = modeleNRZT("BSP", nbEch, Amax, offset);
+						}
+						else {
+							listeValeurs = modeleNRZT("BSS", nbEch, Amax, offset);
+						}
+					}
+				}
+			}
+			
+			
+			for(int j=0; j < nbEch; j++) {
+				informationGeneree.add(listeValeurs[j]);
+			}
+		}
+	}
+	
+	
+	//* a faire pour le calcul du SNR
 	public Information<Float> getSignalAnalogiqueEntree(){
 		return this.informationGeneree;
 	}

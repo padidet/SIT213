@@ -169,34 +169,30 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	 * Convertit l'information analogique NRZT recue en booleen.
 	 */
 	protected void convertFromNRZT() {
-		int compteur = nbEch;
+		int compteur = 0;
+		float somme = 0.0f;
+		float center = (Amax+Amin)/2;
 		for (float value: informationRecue) {
-			float somme = 0;
 			float moyenne = 0;
-			// float seuilTolerence = 0; // TODO: seuil de tolerence a définir
-			for(int i = 0; i < nbEch; i++) {
-				
-				// On cherche parmi les valeurs au milieu du symbole
-				// si la moyenne est egale à Amax (sans seuil de tolerence):
-				if(nbEch/3 < i &&  i < 2 * nbEch/3) {
-					somme += value;
-				}
+			if(compteur >= nbEch/3 && compteur < 2 * nbEch/3) {
+				somme = value;
 			}
-			compteur --;
-			moyenne = somme/(nbEch/3);
-			if(compteur == 0) {
-				if(moyenne >= Amax) { // TODO: A terme, remplacer Amax par Amax - seuilTolerence 
+			compteur++;
+			
+			if(compteur == nbEch) {
+				compteur = 0;
+				moyenne = 3 * somme/nbEch;		// Car on fait somme/(nbEch/3), ce qui est mieux optimise ecrit comme ca.
+				if(moyenne > center) { // TODO: A terme, remplacer Amax par Amax - seuilTolerence <-- modifie par center. Si la moyenne est positive par rapport au centre, 1. 0 sinon.
 					informationGeneree.add(true);
 				}
 				else {
 					informationGeneree.add(false);
 				}
-				compteur = nbEch;
 			}
 		}
 	}
 	
-	/* a faire pour le calcul du SNR
+	//* a faire pour le calcul du SNR
 	public Information<Float> getSignalAnalogiqueSortie(){
 		return this.informationRecue;
 	}

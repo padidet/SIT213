@@ -51,10 +51,10 @@ public class Simulateur {
     private int nbEch = 30;
 
     /** amplitude maximale correspondant a max dans l'argument -ampl min max */
-    private float Amax = 1.0f;
+    private float Amax = 5.0f;
 
     /** amplitude minimale correspondant a min dans l'argument -ampl min max */
-    private float Amin = 0.0f;
+    private float Amin = -5.0f;
 
     /** le  composant Source de la chaine de transmission */
     private Source <Boolean> source = null;
@@ -292,11 +292,20 @@ public class Simulateur {
     }
    
     
-    /*
+    //*
     public float calculPuissanceBruit() {
-    	Information<Float> signalEmis = this.emetteur.getSignalAnalogiqueEntree();
+    	Information<Float> signalEmis = emetteur.getInformationEmise();
+    	Information<Float> signalRecu = recepteur.getInformationRecue();
     	
-    	return 0.0f;
+    	float somme = 0.0f;
+    	float moyenne = 0.0f;
+    	
+    	for(int i = 0; i<nbBitsMess*nbEch; i++) {
+    		// somme = DifferenceTension^2
+    		somme = (signalEmis.iemeElement(i) - signalRecu.iemeElement(i)) * (signalEmis.iemeElement(i) - signalRecu.iemeElement(i));
+    	}
+    	moyenne = somme/(nbEch*nbBitsMess);
+    	return (float) moyenne;
     }
    	//*/
    
@@ -325,6 +334,9 @@ public class Simulateur {
     			s += args[i] + "  ";
     		}
     		System.out.println(s + "  =>   TEB : " + simulateur.calculTauxErreurBinaire());
+    		
+    		float puissanceBruit2 = simulateur.calculPuissanceBruit();
+    		System.out.println("Puissance de bruit : " + puissanceBruit2);
     	}
     	catch (Exception e) {
     		System.out.println(e);
