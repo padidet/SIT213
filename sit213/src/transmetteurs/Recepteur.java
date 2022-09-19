@@ -171,11 +171,11 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 	protected void convertFromNRZT() {
 		int compteur = 0;
 		float somme = 0.0f;
+		float moyenne = 0;
 		float center = (Amax+Amin)/2;
 		for (float value: informationRecue) {
-			float moyenne = 0;
 			if(compteur >= nbEch/3 && compteur < 2 * nbEch/3) {
-				somme = value;
+				somme += value;
 			}
 			compteur++;
 			
@@ -188,6 +188,8 @@ public class Recepteur extends Transmetteur<Float, Boolean> {
 				else {
 					informationGeneree.add(false);
 				}
+				moyenne = 0.0f;
+				somme = 0.0f;
 			}
 		}
 	}

@@ -184,22 +184,24 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 * Modele 8: BPP
 	 * 
 	 */
-	private float[] modeleNRZT(String modele, int nbEch, float Amax, float offSet) {
+	private float[] modeleNRZT(String modele, int nbEch, float Amax, float Amin) {
 		float[] valeursRetour = new float[nbEch];
+		float offSet = (Amax + Amin)/2;
+		float amplitude = (Amax - Amin)/2;
 		// Modele 1:
 		if     (modele == "HSS") {
 			for(int i=0; i < nbEch; i++) {
-				valeursRetour[i] = Amax + offSet;
+				valeursRetour[i] = amplitude + offSet;
 			}
 		}
 		// Modele 2:
 		else if(modele == "HSP") {
 			for(int i=0; i < nbEch; i++) {
 				if(i < 2*nbEch/3) {
-					valeursRetour[i] = Amax + offSet;
+					valeursRetour[i] = amplitude + offSet;
 				}
 				else {
-					valeursRetour[i] = (Amax * (nbEch - i)/nbEch * 3) + offSet;
+					valeursRetour[i] = (amplitude * (nbEch - i)/nbEch * 3) + offSet;
 				}
 			}
 		}
@@ -207,10 +209,10 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 		else if(modele == "HPS") {
 			for(int i=0; i < nbEch; i++) {
 				if(i < nbEch/3) {
-					valeursRetour[i] = (Amax * i/nbEch * 3) + offSet;
+					valeursRetour[i] = (amplitude * i/nbEch * 3) + offSet;
 				}
 				else {
-					valeursRetour[i] = Amax + offSet;
+					valeursRetour[i] = amplitude + offSet;
 				}
 			}
 		}
@@ -218,30 +220,30 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 		else if(modele == "HPP") {
 			for(int i=0; i < nbEch; i++) {
 				if(i < nbEch/3) {
-					valeursRetour[i] = (Amax * i/nbEch * 3) + offSet;
+					valeursRetour[i] = (amplitude * i/nbEch * 3) + offSet;
 				}
 				else if(i >= nbEch/3 && i < 2*nbEch/3){
-					valeursRetour[i] = Amax + offSet;
+					valeursRetour[i] = amplitude + offSet;
 				}
 				else {
-					valeursRetour[i] = (Amax * (nbEch - i)/nbEch * 3) + offSet;
+					valeursRetour[i] = (amplitude * (nbEch - i)/nbEch * 3) + offSet;
 				}
 			}
 		}
 		// Modele 5:
 		else if(modele=="BSS") {
 			for(int i=0; i < nbEch; i++) {
-				valeursRetour[i] = -Amax + offSet;
+				valeursRetour[i] = -amplitude + offSet;
 			}
 		}
 		// Modele 6:
 		else if(modele=="BSP") {
 			for(int i=0; i < nbEch; i++) {
 				if(i < 2 * nbEch/3) {
-					valeursRetour[i] = -Amax + offSet;
+					valeursRetour[i] = -amplitude + offSet;
 				}
 				else {
-					valeursRetour[i] = -(Amax * (nbEch - i)/nbEch * 3) + offSet;
+					valeursRetour[i] = -(amplitude * (nbEch - i)/nbEch * 3) + offSet;
 				}
 			}
 		}
@@ -249,10 +251,10 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 		else if(modele=="BPS") {
 			for(int i=0; i < nbEch; i++) {
 				if(i < nbEch/3) {
-					valeursRetour[i] = -(Amax * i/nbEch * 3) + offSet;
+					valeursRetour[i] = -(amplitude * i/nbEch * 3) + offSet;
 				}
 				else {
-					valeursRetour[i] = -Amax + offSet;
+					valeursRetour[i] = -amplitude + offSet;
 				}
 			}
 		}
@@ -260,13 +262,13 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 		else if(modele=="BPP") {
 			for(int i=0; i < nbEch; i++) {
 				if(i < nbEch/3) {
-					valeursRetour[i] = -(Amax * i/nbEch * 3) + offSet;
+					valeursRetour[i] = -(amplitude * i/nbEch * 3) + offSet;
 				}
 				else if(i >= nbEch/3 && i < 2*nbEch/3){
-					valeursRetour[i] = -Amax + offSet;
+					valeursRetour[i] = -amplitude + offSet;
 				}
 				else {
-					valeursRetour[i] = -(Amax * (nbEch - i)/nbEch * 3) + offSet;
+					valeursRetour[i] = -(amplitude * (nbEch - i)/nbEch * 3) + offSet;
 				}
 			}
 		}
@@ -280,7 +282,6 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	 */
 	protected void convertToNRZT() {
 		
-		float offset = 0.0f; // Valeur que l'on peut modifier en tant que parametre.
 		for (int i = 0; i < informationRecue.nbElements(); i++) {
 			float[] listeValeurs = new float[nbEch];
 			
@@ -288,18 +289,18 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 			if(i == 0) {
 				if(informationRecue.iemeElement(i) == true) {
 					if(informationRecue.iemeElement(i+1) == null || informationRecue.iemeElement(i+1) == false) {
-						listeValeurs = modeleNRZT("HPP", nbEch, Amax, offset);
+						listeValeurs = modeleNRZT("HPP", nbEch, Amax, Amin);
 					}
 					else {
-						listeValeurs = modeleNRZT("HPS", nbEch, Amax, offset);
+						listeValeurs = modeleNRZT("HPS", nbEch, Amax, Amin);
 					}
 				}
 				else {
 					if(informationRecue.iemeElement(i+1) == null || informationRecue.iemeElement(i+1) == true) {
-						listeValeurs = modeleNRZT("BPP", nbEch, Amax, offset);
+						listeValeurs = modeleNRZT("BPP", nbEch, Amax, Amin);
 					}
 					else {
-						listeValeurs = modeleNRZT("BPS", nbEch, Amax, offset);
+						listeValeurs = modeleNRZT("BPS", nbEch, Amax, Amin);
 					}
 				}
 			}
@@ -308,18 +309,18 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 			else if (i == informationRecue.nbElements() - 1) {
 				if(informationRecue.iemeElement(i) == true) {
 					if(informationRecue.iemeElement(i-1) == null || informationRecue.iemeElement(i-1) == false) {
-						listeValeurs = modeleNRZT("HPP", nbEch, Amax, offset);
+						listeValeurs = modeleNRZT("HPP", nbEch, Amax, Amin);
 					}
 					else {
-						listeValeurs = modeleNRZT("HSP", nbEch, Amax, offset);
+						listeValeurs = modeleNRZT("HSP", nbEch, Amax, Amin);
 					}
 				}
 				else {
 					if(informationRecue.iemeElement(i-1) == null || informationRecue.iemeElement(i-1) == true) {
-						listeValeurs = modeleNRZT("BPP", nbEch, Amax, offset);
+						listeValeurs = modeleNRZT("BPP", nbEch, Amax, Amin);
 					}
 					else {
-						listeValeurs = modeleNRZT("BSP", nbEch, Amax, offset);
+						listeValeurs = modeleNRZT("BSP", nbEch, Amax, Amin);
 					}
 				}
 			}
@@ -329,36 +330,36 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 				if(informationRecue.iemeElement(i) == true) {
 					if(informationRecue.iemeElement(i-1) == true) {
 						if(informationRecue.iemeElement(i+1) == true) {
-							listeValeurs = modeleNRZT("HSS", nbEch, Amax, offset);
+							listeValeurs = modeleNRZT("HSS", nbEch, Amax, Amin);
 						}
 						else {
-							listeValeurs = modeleNRZT("HSP", nbEch, Amax, offset);
+							listeValeurs = modeleNRZT("HSP", nbEch, Amax, Amin);
 						}
 					}
 					else {
 						if(informationRecue.iemeElement(i+1) == true) {
-							listeValeurs = modeleNRZT("HPS", nbEch, Amax, offset);
+							listeValeurs = modeleNRZT("HPS", nbEch, Amax, Amin);
 						}
 						else {
-							listeValeurs = modeleNRZT("HPP", nbEch, Amax, offset);
+							listeValeurs = modeleNRZT("HPP", nbEch, Amax, Amin);
 						}
 					}
 				}
 				else {
 					if(informationRecue.iemeElement(i-1) == true) {
 						if(informationRecue.iemeElement(i+1) == true) {
-							listeValeurs = modeleNRZT("BPP", nbEch, Amax, offset);
+							listeValeurs = modeleNRZT("BPP", nbEch, Amax, Amin);
 						}
 						else {
-							listeValeurs = modeleNRZT("BPS", nbEch, Amax, offset);
+							listeValeurs = modeleNRZT("BPS", nbEch, Amax, Amin);
 						}
 					}
 					else {
 						if(informationRecue.iemeElement(i+1) == true) {
-							listeValeurs = modeleNRZT("BSP", nbEch, Amax, offset);
+							listeValeurs = modeleNRZT("BSP", nbEch, Amax, Amin);
 						}
 						else {
-							listeValeurs = modeleNRZT("BSS", nbEch, Amax, offset);
+							listeValeurs = modeleNRZT("BSS", nbEch, Amax, Amin);
 						}
 					}
 				}
