@@ -1,7 +1,5 @@
 package transmetteurs;
 
-import java.util.*;
-
 import destinations.DestinationInterface;
 import information.Information;
 import information.InformationNonConformeException;
@@ -136,28 +134,6 @@ public class Emetteur extends Transmetteur<Boolean, Float> {
 	/**
 	 * Convertit l'information booleenne recue en analogique NRZT.
 	 */
-	/*
-	protected void convertToNRZT() {
-		for (int i = 0; i < informationRecue.nbElements(); i++) {
-			for (int j = 1; j <= nbEch; j++) {
-				if (informationRecue.iemeElement(i)) {
-					if (j <= nbEch / 3) {
-						informationGeneree.add(Amin + ((Amax - Amin) / (nbEch / 3)) * (j - 1));
-					}
-					else if ((j > nbEch / 3) && (j <= nbEch / 3 * 2)) {
-						informationGeneree.add(Amax);
-					}
-					else {
-						informationGeneree.add(Amin + ((Amax - Amin) / (nbEch / 3)) * (nbEch - j));
-					}
-				}
-				else {
-					informationGeneree.add(Amin);	
-				}
-			}
-		}
-	}
-	//*/
 	
 	/**
 	 * Il y a 8 modeles. Ce choix d'implementation est plus lourd mais plus simple.
