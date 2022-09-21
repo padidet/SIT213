@@ -4,15 +4,14 @@ import sources.*;
 import information.*;
 import simulateur.ArgumentsException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-class SourceFixeTest {
+public class SourceFixeTest {
 
 	@Test
     public void testConstructeur() {
-        System.out.println("Test Constucteur SourceFixe");
         String mess = "01011";
         SourceFixe instance;
 		try {
