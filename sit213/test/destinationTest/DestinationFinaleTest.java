@@ -1,10 +1,10 @@
-package sources;
+package destinationTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class SourceAleatoireTest {
+class DestinationFinaleTest {
 
 	@Test
 	void test() {

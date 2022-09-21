@@ -1,10 +1,10 @@
-package transmetteurs;
+package transmetteursTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class TransmetteurParfaitTest {
+class RecepteurTest {
 
 	@Test
 	void test() {

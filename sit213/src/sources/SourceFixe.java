@@ -1,5 +1,7 @@
 package sources;
 
+import java.util.LinkedList;
+
 import information.Information;
 import simulateur.ArgumentsException;
 
@@ -14,12 +16,12 @@ public class SourceFixe extends Source<Boolean> {
 	 */
     public SourceFixe () {
         informationGeneree = new Information<Boolean>();
-        informationGeneree.add(true);
-        informationGeneree.add(false);
-        informationGeneree.add(true);
-        informationGeneree.add(true);
-        informationGeneree.add(false);
-        informationGeneree.add(true);
+        getInformationGeneree().add(true);
+        getInformationGeneree().add(false);
+        getInformationGeneree().add(true);
+        getInformationGeneree().add(true);
+        getInformationGeneree().add(false);
+        getInformationGeneree().add(true);
     }
 
     /**
@@ -39,11 +41,15 @@ public class SourceFixe extends Source<Boolean> {
     	informationGeneree = new Information<Boolean>();
     	for (int i = 0; i < m.length(); i++) {
     		if (m.charAt(i) == '0') {
-    			informationGeneree.add(false);
+    			getInformationGeneree().add(false);
     		} else {
-    			informationGeneree.add(true);
+    			getInformationGeneree().add(true);
     		}
     	}
     	// Ajouter une Information<float>
+    }
+    
+    public Information<Boolean> getInformationGeneree(){
+    	return informationGeneree;
     }
 }

@@ -1,10 +1,10 @@
-package transmetteurs;
+package transmetteursTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class TransmetteurAnalogiqueBruiteTest {
+class EmetteurTest {
 
 	@Test
 	void test() {

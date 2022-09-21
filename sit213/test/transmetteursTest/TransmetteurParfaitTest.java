@@ -1,10 +1,10 @@
-package destinations;
+package transmetteursTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class DestinationFinaleTest {
+class TransmetteurParfaitTest {
 
 	@Test
 	void test() {
