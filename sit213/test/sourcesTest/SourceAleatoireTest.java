@@ -9,7 +9,6 @@ class SourceAleatoireTest {
 
 	 @Test
 	    public void testConstructeur() {
-	        System.out.println("Test Constucteur SourceAleatoire");
 	        int mess_length = 1024;
 	        SourceAleatoire instance = new SourceAleatoire(mess_length);
 

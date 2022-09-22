@@ -21,7 +21,6 @@ public class SourceFixeTest {
 	        Information<Boolean> information = new Information<>(bits);
 	        assertEquals(instance.getInformationGeneree(), information);
 		} catch (ArgumentsException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -36,7 +35,6 @@ public class SourceFixeTest {
 	        Information<Boolean> information2 = new Information<>(bits2);
 	        assertEquals(instance2.getInformationGeneree(), information2);
 		} catch (ArgumentsException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
